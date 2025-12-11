@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add source files from src/
 file(GLOB SRC_FILES src/*.cpp)
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(LearnOpengl)
 target_sources(
