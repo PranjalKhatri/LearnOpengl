@@ -1,16 +1,11 @@
 #pragma once
 
 #include "glad/glad.h"
+#include "gl_types.hpp"
 #include <string>
 #include <string_view>
 
-namespace pop {
-namespace gfx {
-
-enum class ShaderType : GLuint {
-    Vertex = GL_VERTEX_SHADER,
-    Fragment = GL_FRAGMENT_SHADER
-};
+namespace pop::gfx {
 
 class Shader {
    public:
@@ -35,11 +30,11 @@ class Shader {
     ShaderType type() const { return shader_type_; }
 
    private:
-    ShaderType shader_type_;
-    GLuint shader_id_;
+    ShaderType  shader_type_;
+    GLuint      shader_id_;
     std::string shader_source_;
     std::string error_msg_;
-    bool loaded_;
+    bool        loaded_;
 
     static constexpr std::string_view kNotLoadedMsg =
         "Load the Shader before compiling it.";
@@ -61,8 +56,7 @@ class ShaderProgram {
     std::string GetError() const { return error_msg_; }
 
    private:
-    GLuint program_id_;
+    GLuint      program_id_;
     std::string error_msg_;
 };
-}  // namespace gfx
-}  // namespace pop
+}  // namespace pop::gfx
