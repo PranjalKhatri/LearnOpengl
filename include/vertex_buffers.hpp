@@ -1,38 +1,47 @@
 #pragma once
 
+#include "gl_types.hpp"
 #include "glad/glad.h"
+#include <cstddef>
+
 namespace pop::gfx {
-enum class BufferType : GLuint {
-    kNone                    = 0,
-    kArrayBuffer             = GL_ARRAY_BUFFER,
-    kElementArrayBuffer      = GL_ELEMENT_ARRAY_BUFFER,
-    kCopyReadBuffer          = GL_COPY_READ_BUFFER,
-    kCopyWriteBuffer         = GL_COPY_WRITE_BUFFER,
-    kPixelPackBuffer         = GL_PIXEL_PACK_BUFFER,
-    kPixelUnpackBuffer       = GL_PIXEL_UNPACK_BUFFER,
-    kUniformBuffer           = GL_UNIFORM_BUFFER,
-    kShaderStorageBuffer     = GL_SHADER_STORAGE_BUFFER,
-    kAtomicCounterBuffer     = GL_ATOMIC_COUNTER_BUFFER,
-    kTransformFeedbackBuffer = GL_TRANSFORM_FEEDBACK_BUFFER,
-    kTextureBuffer           = GL_TEXTURE_BUFFER,
-    kDrawIndirectBuffer      = GL_DRAW_INDIRECT_BUFFER,
-    kDispatchIndirectBuffer  = GL_DISPATCH_INDIRECT_BUFFER,
-    kQueryBuffer             = GL_QUERY_BUFFER,
-    kParameterBuffer         = GL_PARAMETER_BUFFER
-};
-class VertexBuffer {
+
+class GLBuffer {
    public:
-    explicit VertexBuffer();
-    ~VertexBuffer();
+    explicit GLBuffer(BufferType target);
+    ~GLBuffer();
     // Returns the shader id
     GLuint id() const { return buffer_id_; }
     // Binds this buffer object to the specified target
-    void   Bind(BufferType target);
+    void Bind();
     // calls glBindBuffer with target and then bufferData
-    void   BufferData(BufferType target, GLsizeiptr size, const void* data,
-                      GLenum usage);
+    void BufferData(GLsizeiptr size, const void* data, GLenum usage);
 
    private:
-    GLuint buffer_id_;
+    GLuint     buffer_id_;
+    BufferType target_;
+};
+struct Attribute {
+    GLuint      index;       // attribute location
+    GLint       components;  // 1–4
+    GLType      type;        // GL_FLOAT, GL_INT, ...
+    bool        normalized;  // normalize integer types?
+    GLsizei     stride;      // bytes per vertex
+    std::size_t offset;      // byte offset in struct
+};
+class VertexArray {
+   public:
+    explicit VertexArray();
+    ~VertexArray();
+    // Returns the shader id
+    GLuint id() const { return array_id_; }
+    // Binds this vertexArray
+    void Bind();
+    void UnBind();
+    // Adds and enables the attribute
+    void AddAttribute(Attribute attribute);
+
+   private:
+    GLuint array_id_;
 };
 }  // namespace pop::gfx
