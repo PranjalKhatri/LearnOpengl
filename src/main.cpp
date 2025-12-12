@@ -3,6 +3,7 @@
 
 #include "gl_types.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
 #include "vertex_buffers.hpp"
 #include "stb_image.h"
 
@@ -74,24 +75,16 @@ int main() {
     EBO.Bind();
     EBO.BufferData(sizeof(indices), indices, GL_STATIC_DRAW);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int width, height, nchannels;
-    // load rgb data
-    unsigned char* data =
-        stbi_load("textures/wood.jpg", &width, &height, &nchannels, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(data);
+    Texture texwood{TextureType::kTexture2D};
+    Texture texface{TextureType::kTexture2D};
+    texwood.LoadFromFile("textures/wood.jpg", true);
+    texface.LoadFromFile("textures/face.png", true);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    shaderProgram.use();
+    shaderProgram.SetUniformInt("tex1", 0);
+    shaderProgram.SetUniformInt("tex2", 1);
     // rendering loop
     while (!glfwWindowShouldClose(window)) {
         // input
@@ -100,7 +93,8 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        texwood.Bind(0);
+        texface.Bind(1);
         shaderProgram.use();
         VAO.Bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
