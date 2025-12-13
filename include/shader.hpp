@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 #include "gl_types.hpp"
+#include "glm/glm.hpp"
 #include <string>
 #include <string_view>
 
@@ -62,6 +63,7 @@ class ShaderProgram {
     void SetUniformFloat3(std::string_view name, float x, float y, float z);
     void SetUniformFloat4(std::string_view name, float x, float y, float z,
                           float w);
+    void SetUniformMat4(std::string_view name, float* ptr, bool transpose);
 
    private:
     GLuint      program_id_;

@@ -96,6 +96,13 @@ void ShaderProgram::SetUniformFloat4(std::string_view name, float x, float y,
                                      float z, float w) {
     glUniform4f(glGetUniformLocation(program_id_, name.data()), x, y, z, w);
 }
+
+void ShaderProgram::SetUniformMat4(std::string_view name, float* ptr,
+                                   bool transpose) {
+    glUniformMatrix4fv(glGetUniformLocation(program_id_, name.data()), 1,
+                       transpose ? GL_TRUE : GL_FALSE, ptr);
+}
+
 ShaderProgram::ShaderProgram() : program_id_{glCreateProgram()} {}
 
 ShaderProgram::~ShaderProgram() {
